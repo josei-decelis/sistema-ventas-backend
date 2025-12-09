@@ -1,0 +1,137 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Cliente {
+  id        Int       @id @default(autoincrement())
+  nombre    String
+  telefono  String    @unique
+  direccion String?
+  notas     String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+  
+  ventas    Venta[]
+
+  @@index([telefono])
+  @@index([nombre])
+  @@map("clientes")
+}
+
+model Ingrediente {
+  id            Int       @id @default(autoincrement())
+  nombre        String    @unique
+  costoUnitario Float
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime? @updatedAt
+  
+  productos     ProductoIngrediente[]
+
+  @@map("ingredientes")
+}
+
+model Producto {
+  id          Int       @id @default(autoincrement())
+  nombre      String
+  descripcion String?
+  precioBase  Float
+  activo      Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime? @updatedAt
+  
+  ingredientes ProductoIngrediente[]
+  ventaItems   VentaItem[]
+
+  @@index([activo])
+  @@map("productos")
+}
+
+model ProductoIngrediente {
+  id             Int     @id @default(autoincrement())
+  productoId     Int
+  ingredienteId  Int
+  cantidad       Float
+  
+  producto       Producto    @relation(fields: [productoId], references: [id], onDelete: Cascade)
+  ingrediente    Ingrediente @relation(fields: [ingredienteId], references: [id], onDelete: Cascade)
+
+  @@unique([productoId, ingredienteId])
+  @@index([productoId])
+  @@index([ingredienteId])
+  @@map("productos_ingredientes")
+}
+
+model MetodoPago {
+  id        Int       @id @default(autoincrement())
+  nombre    String    @unique
+  activo    Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+  
+  ventas    Venta[]
+
+  @@map("metodos_pago")
+}
+
+model Venta {
+  id                Int       @id @default(autoincrement())
+  fecha             DateTime  @default(now())
+  hora              DateTime  @default(now())
+  clienteId         Int
+  metodoPagoId      Int
+  total             Float
+  direccionEntrega  String?
+  notas             String?
+  estado            String    @default("completado") // completado, cancelado
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime? @updatedAt
+  
+  cliente           Cliente      @relation(fields: [clienteId], references: [id])
+  metodoPago        MetodoPago   @relation(fields: [metodoPagoId], references: [id])
+  items             VentaItem[]
+
+  @@index([fecha])
+  @@index([clienteId])
+  @@index([metodoPagoId])
+  @@index([estado])
+  @@map("ventas")
+}
+
+model VentaItem {
+  id             Int     @id @default(autoincrement())
+  ventaId        Int
+  productoId     Int
+  cantidad       Int
+  precioUnitario Float
+  subtotal       Float
+  
+  venta          Venta    @relation(fields: [ventaId], references: [id], onDelete: Cascade)
+  producto       Producto @relation(fields: [productoId], references: [id])
+
+  @@index([ventaId])
+  @@index([productoId])
+  @@map("venta_items")
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  username  String    @unique
+  password  String
+  nombre    String
+  role      String    @default("vendedor") // admin, vendedor, cajero
+  activo    Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+
+  @@index([username])
+  @@index([activo])
+  @@map("users")
+}
