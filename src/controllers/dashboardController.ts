@@ -30,7 +30,7 @@ class DashboardController {
     }
   }
 
-  async obtenerVentasPorMes(req: Request, res: Response, next: NextFunction) {
+  async obtenerVentasPorMes(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const { meses } = req.query;
       const cantidadMeses = meses ? parseInt(meses as string) : 6;

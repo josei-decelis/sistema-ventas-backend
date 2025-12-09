@@ -3,10 +3,10 @@ import { AppError } from '../utils/AppError';
 
 export const errorHandler = (
   err: Error | AppError,
-  req: Request,
+  _req: Request,
   res: Response,
-  next: NextFunction
-) => {
+  _next: NextFunction
+): void => {
   if (err instanceof AppError) {
     return res.status(err.statusCode).json({
       status: err.status,
