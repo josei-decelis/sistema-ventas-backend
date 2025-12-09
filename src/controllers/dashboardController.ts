@@ -18,7 +18,7 @@ class DashboardController {
     }
   }
 
-  async obtenerVentasDelDia(req: Request, res: Response, next: NextFunction) {
+  async obtenerVentasDelDia(_req: Request, res: Response, next: NextFunction) {
     try {
       const resultado = await dashboardService.obtenerVentasDelDia();
       res.status(200).json({
@@ -30,7 +30,7 @@ class DashboardController {
     }
   }
 
-  async obtenerVentasPorMes(req: Request, res: Response, next: NextFunction): Promise<void> {
+  async obtenerVentasPorMes(req: Request, res: Response, next: NextFunction) {
     try {
       const { meses } = req.query;
       const cantidadMeses = meses ? parseInt(meses as string) : 6;
