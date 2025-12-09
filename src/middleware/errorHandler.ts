@@ -32,7 +32,7 @@ export const errorHandler = (
 
   console.error('ERROR 💥', err);
 
-  res.status(500).json({
+  return res.status(500).json({
     status: 'error',
     message: process.env.NODE_ENV === 'development' 
       ? err.message 
