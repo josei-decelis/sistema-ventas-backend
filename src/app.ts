@@ -11,6 +11,7 @@ import productoRoutes from './routes/productoRoutes';
 import metodoPagoRoutes from './routes/metodoPagoRoutes';
 import ventaRoutes from './routes/ventaRoutes';
 import dashboardRoutes from './routes/dashboardRoutes';
+import setupRoutes from './routes/setupRoutes';
 
 dotenv.config();
 
@@ -45,6 +46,7 @@ app.use('/api/productos', productoRoutes);
 app.use('/api/metodos-pago', metodoPagoRoutes);
 app.use('/api/ventas', ventaRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/setup', setupRoutes);
 
 // Ruta no encontrada
 app.use('*', (req, res) => {
